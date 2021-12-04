@@ -8,4 +8,6 @@ Dataset: https://ourworldindata.org/covid-deaths
 - select everything from "new_tests" to the right end of dataset and delete - save as CovidDeaths
 - restore that data (ctrl+z). Delete everything between columns "population" and "weekly_hosp_admissions_per_million" - save as CovidVaccinations
 
-#2 Importing datasets into SQL:
+#2 Import datasets into SQL
+
+#3 EXPLORE! :))
