@@ -10,7 +10,6 @@ Dataset: https://ourworldindata.org/covid-deaths
 
 #2 Import datasets into SQL
 - I had an issue with datasets. Whenever column starts as a blank cell and any values appears after more than just few line (20+), then after data import to SQL it showed that these columns contains only NULL values
-- So thing I did (after looking on many-many solutions) was just to add 0 (zeroes) to each blank cells that were at the beggining of columns. 
-I mean, if on row number 1500 was a blank cell then I did not add any 0 there.
+- So thing I did (after looking on many-many solutions) was just to add 0 (zeroes) to each blank cells that were at the beggining of columns.  I mean, if on row number 1500 was a blank cell then I did not add any 0 there.
 
 #3 EXPLORE
