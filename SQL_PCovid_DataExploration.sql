@@ -14,17 +14,60 @@ Dataset: https://ourworldindata.org/covid-deaths
 
 #3 EXPLORE
 */
+
 -- Looking through, to be sure that everything is fine
 
 SELECT *
 FROM PortfolioProject..CovidDeaths
+WHERE continent IS NOT NULL
 ORDER BY 3,4
 
 SELECT *
 FROM PortfolioProject..CovidVaccinations
+WHERE continent IS NOT NULL
 ORDER BY 3,4
 
 -- Select Data
 SELECT location, date, total_cases, new_cases,  total_deaths, population
 FROM PortfolioProject..CovidDeaths
+WHERE continent IS NOT NULL
 ORDER BY 1,2
+
+-- Total Cases vs Total Deaths: Likelihood of dying if you contract covid in your country
+SELECT location, date, total_cases, total_deaths, (total_deaths/total_cases)*100 as DeathPercentage
+FROM PortfolioProject..CovidDeaths
+WHERE location like 'Poland'
+-- WHERE continent IS NOT NULL
+ORDER BY 1,2
+
+-- Total Cases vs Population: Percentage of Population infected with covid
+SELECT location, date, population, total_cases, (total_cases/population)*100 as PercentPopulationInfected
+FROM PortfolioProject..CovidDeaths
+WHERE continent IS NOT NULL
+ORDER BY 1,2
+
+-- Countires with Highest Infection Rate compared to Population
+SELECT location, population, MAX(total_cases) as HighestInfectionCount, MAX((total_cases/population))*100 as PercentPopulationInfected
+FROM PortfolioProject..CovidDeaths
+WHERE continent IS NOT NULL
+GROUP BY location, population
+ORDER BY PercentPopulationInfected desc
+
+-- Countries with Highest Death Count per Population
+SELECT location, MAX(total_deaths) as TotalDeathCount
+FROM PortfolioProject..CovidDeaths
+WHERE continent IS NOT NULL
+GROUP BY location
+ORDER BY TotalDeathCount desc
+
+-- Highest Death Count per Population by Continent
+SELECT location, MAX(total_deaths) as TotalDeathCount
+FROM PortfolioProject..CovidDeaths
+WHERE continent IS NULL
+AND location NOT LIKE 'High income' 
+AND location NOT LIKE 'Upper middle income'
+AND location NOT LIKE 'Lower middle income'
+AND location NOT LIKE 'Low income'
+AND location NOT LIKE 'International'
+GROUP BY location
+ORDER BY TotalDeathCount desc
