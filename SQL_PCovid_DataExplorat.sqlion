@@ -14,3 +14,18 @@ Dataset: https://ourworldindata.org/covid-deaths
 - Another issue - I could not import .xlsx file so to solve it I used SQL Server 20xx Import and Export Data (64-bit)
 
 #3 EXPLORE
+
+-- Looking through, to be sure that everything is fine
+
+SELECT *
+FROM PortfolioProject..CovidDeaths
+ORDER BY 3,4
+
+SELECT *
+FROM PortfolioProject..CovidVaccinations
+ORDER BY 3,4
+
+-- Select Data
+SELECT location, date, total_cases, new_cases,  total_deaths, population
+FROM PortfolioProject..CovidDeaths
+ORDER BY 1,2
