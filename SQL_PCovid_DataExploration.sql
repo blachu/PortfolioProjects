@@ -1,7 +1,6 @@
-//
+/*
 Project scope: COVID-19 data exploration with SQL
 Dataset: https://ourworldindata.org/covid-deaths
-//
 
 #1 Getting out dataset:
 - move column "population" right behind "date"
@@ -14,7 +13,7 @@ Dataset: https://ourworldindata.org/covid-deaths
 - Another issue - I could not import .xlsx file so to solve it I used SQL Server 20xx Import and Export Data (64-bit)
 
 #3 EXPLORE
-
+*/
 -- Looking through, to be sure that everything is fine
 
 SELECT *
