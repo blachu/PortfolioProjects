@@ -16,7 +16,6 @@ Dataset: https://ourworldindata.org/covid-deaths
 */
 
 -- Looking through, to be sure that everything is fine
-
 SELECT *
 FROM PortfolioProject..CovidDeaths
 WHERE continent IS NOT NULL
