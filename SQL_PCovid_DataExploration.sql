@@ -72,3 +72,36 @@ GROUP BY location
 ORDER BY TotalDeathCount desc
 
 
+-- GLOBAL PERSPECTIVE ON DATASET
+-- GLOBAL DEATH PERCENTAGE by date
+SELECT date, SUM(new_cases) as total_cases, SUM(new_deaths) as total_deaths
+		   , SUM(new_deaths) / NULLIF( SUM(new_cases), 0) *100 as DeathPercentage
+FROM PortfolioProject..CovidDeaths
+WHERE continent IS NULL
+	  AND new_cases IS NOT NULL
+	  AND new_deaths IS NOT NULL
+GROUP BY date
+ORDER BY 1, 2
+
+-- GLOBAL DEATH PERCENTAGE
+SELECT SUM(new_cases) as total_cases, SUM(new_deaths) as total_deaths
+		   , SUM(new_deaths) / NULLIF( SUM(new_cases), 0) *100 as DeathPercentage
+FROM PortfolioProject..CovidDeaths
+WHERE continent IS NULL
+	  AND new_cases IS NOT NULL
+	  AND new_deaths IS NOT NULL
+ORDER BY 1, 2
+
+-- TOTAL POPULATION VERSUS TOTAL VACCINATIONS
+SELECT dea.continent, dea.location, dea.date, dea.population, vac.new_vaccinations
+	   , SUM(vac.new_vaccinations) OVER (PARTITION BY dea.location ORDER BY dea.location, dea.date) as RollingPplVacc
+FROM PortfolioProject..CovidDeaths dea
+JOIN PortfolioProject..CovidVaccinations vac
+	ON dea.location = vac.location
+	AND dea.date = vac.date
+WHERE dea.continent IS NOT NULL
+ORDER BY 2,3
+
+-- Had to chunk column cause of error in previous query to execute that query
+ALTER TABLE dbo.CovidDeaths
+ALTER COLUMN location nvarchar(180)
