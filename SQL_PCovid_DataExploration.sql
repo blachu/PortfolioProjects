@@ -32,34 +32,34 @@ FROM PortfolioProject..CovidDeaths
 WHERE continent IS NOT NULL
 ORDER BY 1,2
 
--- Total Cases vs Total Deaths: Likelihood of dying if you contract covid in your country
+-- TOTAL CASES VERSUS TOTAL DEATHS: likelihood of dying if you contract covid in your country
 SELECT location, date, total_cases, total_deaths, (total_deaths/total_cases)*100 as DeathPercentage
 FROM PortfolioProject..CovidDeaths
 WHERE location like 'Poland'
 -- WHERE continent IS NOT NULL
 ORDER BY 1,2
 
--- Total Cases vs Population: Percentage of Population infected with covid
+-- TOTAL CASES VERSUS POPULATION: percentage of population infected with covid
 SELECT location, date, population, total_cases, (total_cases/population)*100 as PercentPopulationInfected
 FROM PortfolioProject..CovidDeaths
 WHERE continent IS NOT NULL
 ORDER BY 1,2
 
--- Countires with Highest Infection Rate compared to Population
+-- HIGHEST INFECTION RATE compared to population by country
 SELECT location, population, MAX(total_cases) as HighestInfectionCount, MAX((total_cases/population))*100 as PercentPopulationInfected
 FROM PortfolioProject..CovidDeaths
 WHERE continent IS NOT NULL
 GROUP BY location, population
 ORDER BY PercentPopulationInfected desc
 
--- Countries with Highest Death Count per Population
+-- HIGHEST DEATH COUNT per population by country
 SELECT location, MAX(total_deaths) as TotalDeathCount
 FROM PortfolioProject..CovidDeaths
 WHERE continent IS NOT NULL
 GROUP BY location
 ORDER BY TotalDeathCount desc
 
--- Highest Death Count per Population by Continent
+-- HIGHEST DEATH COUNT per population by continent
 SELECT location, MAX(total_deaths) as TotalDeathCount
 FROM PortfolioProject..CovidDeaths
 WHERE continent IS NULL
@@ -70,3 +70,5 @@ AND location NOT LIKE 'Low income'
 AND location NOT LIKE 'International'
 GROUP BY location
 ORDER BY TotalDeathCount desc
+
+
