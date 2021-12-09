@@ -105,3 +105,50 @@ ORDER BY 2,3
 -- Had to chunk column cause of error in previous query to execute that query
 ALTER TABLE dbo.CovidDeaths
 ALTER COLUMN location nvarchar(180)
+
+-- CTE - to calculate on PARTITON BY in previous query
+WITH popVSvac (continent, location, date, population, new_vaccinations, RollingPplVacc) AS
+(
+SELECT dea.continent, dea.location, dea.date, dea.population, vac.new_vaccinations
+	   , SUM(vac.new_vaccinations) OVER (PARTITION BY dea.location ORDER BY dea.location, dea.date) as RollingPplVacc
+FROM PortfolioProject..CovidDeaths dea
+JOIN PortfolioProject..CovidVaccinations vac
+	ON dea.location = vac.location
+	AND dea.date = vac.date
+WHERE dea.continent IS NOT NULL
+)
+Select *, (RollingPplVacc / population) * 100 AS popVSvac
+From popVSvac
+
+-- TEMP TABLE
+DROP TABLE IF EXISTS #PercentPopVacc
+CREATE TABLE #PercentPopVacc
+(
+continent nvarchar(255),
+location nvarchar(255),
+date datetime,
+population numeric,
+new_vaccinations numeric,
+RollingPplVacc numeric
+)
+
+INSERT INTO #PercentPopVacc
+SELECT dea.continent, dea.location, dea.date, dea.population, vac.new_vaccinations
+	   , SUM(vac.new_vaccinations) OVER (PARTITION BY dea.location ORDER BY dea.location, dea.date) as RollingPplVacc
+FROM PortfolioProject..CovidDeaths dea
+JOIN PortfolioProject..CovidVaccinations vac
+	ON dea.location = vac.location
+	AND dea.date = vac.date
+
+SELECT *, (RollingPplVacc / population) * 100 AS popVSvac
+FROM #PercentPopVacc
+
+-- VIEW for visualizations
+CREATE VIEW PercentPopVacc AS
+SELECT dea.continent, dea.location, dea.date, dea.population, vac.new_vaccinations
+	   , SUM(vac.new_vaccinations) OVER (PARTITION BY dea.location ORDER BY dea.location, dea.date) as RollingPplVacc
+FROM PortfolioProject..CovidDeaths dea
+JOIN PortfolioProject..CovidVaccinations vac
+	ON dea.location = vac.location
+	AND dea.date = vac.date
+WHERE dea.continent IS NOT NULL
