@@ -8,20 +8,17 @@ SELECT *
 FROM PortfolioProject..Housing
 
 -------------------------------------------------------------
-
+-- CONVERT
 -- Standardize data format
 -- SaleDate has time in the end. I'll take that off
 SELECT SaleDate
 	, CONVERT(Date, SaleDate)
 FROM PortfolioProject..Housing
 
-ALTER TABLE Housing
+ALTER TABLE PortfolioProject..Housing
 ADD SaleDateConverted Date;
-UPDATE Housing
+UPDATE PortfolioProject..Housing
 SET SaleDateConverted = CONVERT(Date, SaleDate)
-
-SELECT SaleDateConverted
-FROM PortfolioProject..Housing
 
 -------------------------------------------------------------
 
@@ -61,5 +58,64 @@ JOIN PortfolioProject..Housing AS b
 	ON a.ParcelID = b.ParcelID
 	AND a.[UniqueID ] <> b.[UniqueID ]
 WHERE a.PropertyAddress IS NULL
+
+-------------------------------------------------------------
+-- SUBSTRING, CHARINDEX, PARSENAME, REPLACE
+-- Separate Addess column into individual columns - Address and City
+SELECT PropertyAddress
+FROM PortfolioProject..Housing
+
+-- Getting rid of comma delimiter
+SELECT
+SUBSTRING(PropertyAddress, 1, CHARINDEX(',', PropertyAddress) -1) AS Address
+FROM PortfolioProject..Housing
+
+-- Separate City
+SELECT
+SUBSTRING(PropertyAddress, 1, CHARINDEX(',', PropertyAddress) -1) AS Address
+, SUBSTRING(PropertyAddress, CHARINDEX(',', PropertyAddress) +1, LEN(PropertyAddress)) AS City
+FROM PortfolioProject..Housing
+
+-- Adding two new columns to populate them with Address and City
+ALTER TABLE PortfolioProject..Housing
+ADD PropertySplitAddress Nvarchar(255);
+
+ALTER TABLE PortfolioProject..Housing
+ADD PropertySplitCity Nvarchar(255);
+
+UPDATE PortfolioProject..Housing
+SET PropertySplitAddress = SUBSTRING(PropertyAddress, 1, CHARINDEX(',', PropertyAddress) -1)
+
+UPDATE PortfolioProject..Housing
+SET PropertySplitCity = SUBSTRING(PropertyAddress, CHARINDEX(',', PropertyAddress) +1, LEN(PropertyAddress))
+
+-- OwnerAddress case - Separate (in easier way) PropertyAddress, City and State
+SELECT OwnerAddress
+FROM PortfolioProject..Housing
+
+SELECT
+PARSENAME( REPLACE(OwnerAddress, ',', '.'), 3)
+, PARSENAME( REPLACE(OwnerAddress, ',', '.'), 2)
+, PARSENAME( REPLACE(OwnerAddress, ',', '.'), 1)
+FROM PortfolioProject..Housing
+
+-- Adding columns
+ALTER TABLE PortfolioProject..Housing
+ADD OwnerSplitAddress Nvarchar(255);
+
+ALTER TABLE PortfolioProject..Housing
+ADD OwnerSplitCity Nvarchar(255);
+
+ALTER TABLE PortfolioProject..Housing
+ADD OwnerSplitState Nvarchar(255);
+
+UPDATE PortfolioProject..Housing
+SET OwnerSplitAddress = PARSENAME( REPLACE(OwnerAddress, ',', '.'), 3);
+
+UPDATE PortfolioProject..Housing
+SET OwnerSplitCity = PARSENAME( REPLACE(OwnerAddress, ',', '.'), 2);
+
+UPDATE PortfolioProject..Housing
+SET OwnerSplitState = PARSENAME( REPLACE(OwnerAddress, ',', '.'), 1);
 
 -------------------------------------------------------------
