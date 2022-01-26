@@ -119,3 +119,34 @@ UPDATE PortfolioProject..Housing
 SET OwnerSplitState = PARSENAME( REPLACE(OwnerAddress, ',', '.'), 1);
 
 -------------------------------------------------------------
+-- CASE statements
+-- Changing Y and N to Yes and No in column SoldAsVacant
+-- Checking how many Y, N, Yes and No are there
+SELECT 
+	DISTINCT(SoldAsVacant), COUNT(SoldAsVacant) AS Amount
+FROM 
+	PortfolioProject..Housing
+GROUP BY
+	SoldAsVacant
+ORDER BY
+	Amount
+
+
+SELECT 
+	SoldAsVacant
+	, CASE WHEN SoldAsVacant = 'Y' THEN 'Yes'
+		   WHEN SoldAsVacant = 'N' THEN 'No'
+		   ELSE SoldAsVacant
+		   END
+FROM 
+	PortfolioProject..Housing
+
+UPDATE PortfolioProject..Housing
+SET
+	SoldAsVacant = CASE 
+		WHEN SoldAsVacant = 'Y' THEN 'Yes'
+		WHEN SoldAsVacant = 'N' THEN 'No'
+		ELSE SoldAsVacant
+		END
+
+-------------------------------------------------------------
