@@ -150,3 +150,59 @@ SET
 		END
 
 -------------------------------------------------------------
+-- ROW_NUMBER, CTE, windows function PARTITION BY
+-- Removing duplicates
+-- I am trying to find where are duplicates, how many of them exist
+SELECT *
+	, ROW_NUMBER() OVER (
+	PARTITION BY ParcelID
+				,PropertyAddress
+				,SaleDate
+				,SalePrice
+				,LegalReference
+	ORDER BY
+		UniqueID
+		) AS RowNum
+FROM PortfolioProject..Housing
+ORDER BY ParcelID
+
+-- I need to put this query to CTE to use WHERE function and find which exactly rows are duplicated
+WITH RowNumCTE AS (
+SELECT *
+	, ROW_NUMBER() OVER (
+	PARTITION BY ParcelID
+				,PropertyAddress
+				,SaleDate
+				,SalePrice
+				,LegalReference
+	ORDER BY
+		UniqueID
+		) AS RowNum
+FROM PortfolioProject..Housing
+)
+
+SELECT *
+FROM RowNumCTE
+WHERE RowNum > 1
+ORDER BY ParcelID
+
+-- To delete duplicate rows I need to put DELETE after CTE function instead of "SELECT *"
+WITH RowNumCTE AS (
+SELECT *
+	, ROW_NUMBER() OVER (
+	PARTITION BY ParcelID
+				,PropertyAddress
+				,SaleDate
+				,SalePrice
+				,LegalReference
+	ORDER BY
+		UniqueID
+		) AS RowNum
+FROM PortfolioProject..Housing
+)
+
+DELETE
+FROM RowNumCTE
+WHERE RowNum > 1
+
+-------------------------------------------------------------
