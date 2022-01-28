@@ -206,3 +206,7 @@ FROM RowNumCTE
 WHERE RowNum > 1
 
 -------------------------------------------------------------
+
+-- Delete unused columns - TaxDistrict, PropertyAddress and OwnerAddress (as I split them into more columns)
+ALTER TABLE PortfolioProject..Housing
+DROP COLUMN PropertyAddress, OwnerAddress, TaxDistrict, SaleDate
